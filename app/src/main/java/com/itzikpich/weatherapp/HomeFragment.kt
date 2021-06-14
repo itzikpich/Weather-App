@@ -13,10 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.itzikpich.weatherapp.adapters.HourListAdapter
 import com.itzikpich.weatherapp.databinding.*
 import com.itzikpich.weatherapp.models.*
-import com.itzikpich.weatherapp.utilities.loadFromUrlToGlide
-import com.itzikpich.weatherapp.utilities.toCustomMainDate
-import com.itzikpich.weatherapp.utilities.toFahrenheit
-import com.itzikpich.weatherapp.utilities.toHMTime
+import com.itzikpich.weatherapp.utilities.*
 import com.itzikpich.weatherapp.view_holders.ViewBindingViewHolder
 
 
@@ -113,7 +110,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                             item.sunrizeTime?.let { sunrize.text = "sunrize: ${it.toHMTime()}" }
                             item.sunsetTime?.let { sunset.text = "sunset: ${it.toHMTime()}" }
                             item.lengthOfDay?.let { lengthOfDay.text = "Length of day: ${it.toHMTime()} Hours" }
-//                            weatherGraph.citySunrizeSunsetData = item
+                            val progress = (1  - getTimeUntilMidnight() / 86400000) * 0.75f + 0.125f
+                            weatherGraph.setProgress(progress)
                         }
                     }
                     is CityCurrentDetailsData -> {

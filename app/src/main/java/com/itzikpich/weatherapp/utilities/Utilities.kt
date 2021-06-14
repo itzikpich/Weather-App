@@ -45,3 +45,13 @@ fun Long.toHourDayTime() = SimpleDateFormat("HH:mm\ndd/MM").format(this*1000)
 fun Long.toMinutes() = (SimpleDateFormat("HH").format(this*1000)).toLong()*60 + (SimpleDateFormat("mm").format(this*1000)).toLong()
 
 fun currentDateTime(): String = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale("he")).format(Date())
+
+fun getTimeUntilMidnight(): Float {
+    val c = Calendar.getInstance()
+    c.add(Calendar.DAY_OF_MONTH, 1)
+    c[Calendar.HOUR_OF_DAY] = 0
+    c[Calendar.MINUTE] = 0
+    c[Calendar.SECOND] = 0
+    c[Calendar.MILLISECOND] = 0
+    return c.timeInMillis - System.currentTimeMillis().toFloat()
+}

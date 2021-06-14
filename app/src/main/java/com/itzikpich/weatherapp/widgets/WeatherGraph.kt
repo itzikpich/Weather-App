@@ -1,75 +1,89 @@
 package com.itzikpich.weatherapp.widgets
 
-import android.content.Context
 import android.graphics.*
+import com.itzikpich.weatherapp.R
+import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.itzikpich.weatherapp.models.CitySunrizeSunsetData
-import com.itzikpich.weatherapp.utilities.toHMTime
-import com.itzikpich.weatherapp.utilities.toMinutes
-import kotlin.properties.Delegates
+import androidx.core.graphics.drawable.toBitmap
+import kotlin.math.ceil
 
-private const val TAG = "WeatherGraph"
 
 class WeatherGraph @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
 
-    var citySunrizeSunsetData: CitySunrizeSunsetData? by Delegates.observable(null) { property, oldValue, newValue ->
-        val divider = this.width / 1440f
-        val rize = newValue?.sunrizeTime?.toMinutes()?.times(divider)
-        val set = newValue?.sunsetTime?.toMinutes()?.times(divider)
-        if (set == null || rize == null) return@observable
-        rectF = RectF(rize, 0f, set, this.height.toFloat())
-        rectFStart = RectF(0f, 0f, rize, this.height.toFloat())
-        rectFEnd = RectF(set, 0f, this.width.toFloat(), this.height.toFloat())
+    fun setProgress(progress: Float) {
+        this.progress = progress
+        updateDrawing(width, height)
         invalidate()
-//        RectF(0f, 30f, 500f, 200f)
     }
 
-    val path = Path()
-    val drawPath = Path()
-    var rectF: RectF? = null
-    var rectFStart: RectF? = null
-    var rectFEnd: RectF? = null
-
-    private val drawPaint: Paint = Paint().apply {
-        color = Color.WHITE
-        strokeWidth = 2F
+    fun setSunBitmap(resourceId: Int) {
+        sunBitmap = resources.getDrawable(resourceId, this.context.theme).toBitmap()
+        updateDrawing(width, height)
+        invalidate()
     }
 
-    private val linePaint: Paint = Paint().apply {
-        color = Color.BLACK
-        strokeWidth = 2F
+    private var progress: Float = 0.5f
+
+    private var sunLocation = Point(0, 0)
+
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 5f
     }
 
-    init {
-        Log.d(TAG, "init ")
+    private var sunBitmap: Bitmap = resources.getDrawable(R.drawable.ic_sun, this.context.theme).toBitmap()
+
+    private var path: Path? = null
+
+    private fun updateDrawing(w: Int, h: Int) {
+        path = createPath(w, h)
+        sunLocation = Point(
+            (progress * w - sunBitmap.width / 2).toInt(),
+            (getSunHigh(progress, h) - sunBitmap.height / 2).toInt()
+        )
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        updateDrawing(w, h)
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        val divider = this.width.toFloat() / 1440
-//        val rize = 1622687562L.toMinutes() * divider
-//        val set = 1622738650L.toMinutes() * divider
-//        newValue?.lengthOfDay?.toMinutes()
-//        val rectF = RectF(rize, 0f, set, this.height.toFloat())
+    override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas.drawLine(0f, this.height/2f, this.width.toFloat(), this.height/2f, linePaint)
-        rectF?.let { canvas.drawArc(it, 180f, 180f, false, drawPaint) }
-        rectFStart?.let { canvas.drawArc(it, 0f, 180f, false, drawPaint) }
-        rectFEnd?.let { canvas.drawArc(it, 0f, 180f, false, drawPaint) }
+        canvas?.apply {
+            if(path != null) {
+                drawPath(path!! , paint)
+            }
+            drawBitmap(sunBitmap, sunLocation.x.toFloat(), sunLocation.y.toFloat(), paint)
+        }
     }
 
+    private fun createPath(sizeX: Int, sizeY: Int): Path = Path().apply {
+        val dx = 0.005f
+        val steps = ceil(1 / dx).toInt() + 1
+        repeat(steps) { stepCount ->
+            val x = dx * stepCount
+            lineTo(x * sizeX , getSunHigh(x, sizeY))
+        }
+    }
 
+    private fun getSunHigh(x: Float, sizeY: Int) : Float{
+        return (curve(x) * (sizeY - sunBitmap.height).toFloat()) * -1f + sizeY - sunBitmap.height / 2
+    }
+
+    private fun curve(x: Float): Float {
+        return when {
+            x <= 0.25 -> 19 * (x) * (x - 0.25) + 0.3
+            x <= 0.75 -> -11 * (x - 0.25) * (x - 0.75) + 0.3
+            x > 0.25 -> 19 * (x - 0.75) * (x - 1) + 0.3
+            else -> 0f
+        }.toFloat()
+
+    }
 }
