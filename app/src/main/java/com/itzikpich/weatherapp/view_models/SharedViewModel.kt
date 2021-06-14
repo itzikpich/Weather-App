@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.itzikpich.weatherapp.data.Repository
 import com.itzikpich.weatherapp.models.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 private const val TAG = "SharedViewModel"
 
+@HiltViewModel
 class SharedViewModel @Inject constructor(
     app:Application,
     private val repository: Repository

@@ -1,6 +1,5 @@
 package com.itzikpich.weatherapp
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -15,19 +14,16 @@ import com.itzikpich.weatherapp.adapters.CityListAdapter
 import com.itzikpich.weatherapp.databinding.FragmentCitiesBinding
 import com.itzikpich.weatherapp.models.CityWeatherResult
 import com.itzikpich.weatherapp.view_models.CitiesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
 
+@AndroidEntryPoint
 class CitiesFragment : BaseFragment<FragmentCitiesBinding>(FragmentCitiesBinding::inflate) {
 
-    val citiesViewModel by viewModels<CitiesViewModel> {factory}
+    private val citiesViewModel by viewModels<CitiesViewModel>()
 
-    var job: Job? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity.mainActivitySybComponent.inject(this)
-    }
+    private var job: Job? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

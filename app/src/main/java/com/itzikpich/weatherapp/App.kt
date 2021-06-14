@@ -1,10 +1,7 @@
 package com.itzikpich.weatherapp
 
 import android.app.Application
-import com.itzikpich.weatherapp.di.components.DaggerApplicationComponent
+import dagger.hilt.android.HiltAndroidApp
 
-class App: Application() {
-
-    val appComponent = DaggerApplicationComponent.builder().create(this).build()
-
-}
+@HiltAndroidApp
+class App: Application()

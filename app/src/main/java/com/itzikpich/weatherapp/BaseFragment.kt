@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.itzikpich.weatherapp.view_models.SharedViewModel
-import javax.inject.Inject
+
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
@@ -19,10 +18,7 @@ open class BaseFragment<VB: ViewBinding>(private val inflate: Inflate<VB>) : Fra
 
     val mainActivity get() = activity as MainActivity
 
-    val sharedViewModel by activityViewModels<SharedViewModel> {factory}
-
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
+    val sharedViewModel by activityViewModels<SharedViewModel>()
 
     private var _binding: VB? = null
     val binding get() = _binding!!

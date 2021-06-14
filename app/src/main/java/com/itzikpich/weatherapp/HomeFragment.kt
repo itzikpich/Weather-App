@@ -1,6 +1,5 @@
 package com.itzikpich.weatherapp
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -15,14 +14,11 @@ import com.itzikpich.weatherapp.databinding.*
 import com.itzikpich.weatherapp.models.*
 import com.itzikpich.weatherapp.utilities.*
 import com.itzikpich.weatherapp.view_holders.ViewBindingViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity.mainActivitySybComponent.inject(this)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

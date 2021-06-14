@@ -1,6 +1,5 @@
 package com.itzikpich.weatherapp
 
-import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -9,13 +8,11 @@ import com.itzikpich.weatherapp.databinding.FragmentCityDetailsBinding
 import com.itzikpich.weatherapp.models.LatLon
 import com.itzikpich.weatherapp.utilities.loadFromUrlToGlide
 import com.itzikpich.weatherapp.utilities.toFahrenheit
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class CityDetailsFragment: BaseFragment<FragmentCityDetailsBinding>(FragmentCityDetailsBinding::inflate) {
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity.mainActivitySybComponent.inject(this)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

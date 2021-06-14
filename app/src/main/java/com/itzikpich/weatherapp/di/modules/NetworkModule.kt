@@ -5,21 +5,18 @@ import com.itzikpich.weatherapp.utilities.BASE_URL
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module
-class NetworkModule {
 
-    /**
-     *  You can use the @Provides annotation in Dagger modules
-     *  to tell Dagger how to provide classes
-     *  that your project doesn't own
-     *  (e.g. an instance of Retrofit).
-     */
+@Module
+@InstallIn(SingletonComponent::class)
+class NetworkModule {
 
     @Singleton
     @Provides

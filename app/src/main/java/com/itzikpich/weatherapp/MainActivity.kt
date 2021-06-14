@@ -16,33 +16,27 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.itzikpich.weatherapp.databinding.ActivityMainBinding
-import com.itzikpich.weatherapp.di.components.MainActivitySubComponent
 import com.itzikpich.weatherapp.view_models.SharedViewModel
 import javax.inject.Inject
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.itzikpich.weatherapp.models.LatLon
+import dagger.hilt.android.AndroidEntryPoint
 
 
 const val LOCATION_REQUEST_CODE = 123456
 private const val TAG = "MainActivity"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    lateinit var mainActivitySybComponent: MainActivitySubComponent
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    val sharedViewModel by viewModels<SharedViewModel> {factory}
+    val sharedViewModel by viewModels<SharedViewModel>()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        mainActivitySybComponent = (applicationContext as App).appComponent.mainActivitySubComponent().create()
-        mainActivitySybComponent.inject(this)
-
         super.onCreate(savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

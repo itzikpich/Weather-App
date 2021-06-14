@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itzikpich.weatherapp.data.Repository
 import com.itzikpich.weatherapp.models.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "SharedViewModel"
 
+@HiltViewModel
 class CitiesViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     var isLoading = MutableLiveData(false)
